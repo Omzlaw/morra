@@ -14,9 +14,16 @@ const ctcBob = accBob.contract(backend, ctcAlice.getInfo());
 
 await Promise.all([
     ctcAlice.p.Alice({
-
+        ...Player('Alice'),
+        setWager: () => {
+            const wager = stdlib.parseCurrency(10);
+            return wager
+        }
     }),
     ctcBob.p.Bob({
-
+        ...Player('Bob'),
+        acceptWager: (wager) => {
+            console.log(`Bob accepted wager of ${wager}`);
+        }
     }),
 ]);
