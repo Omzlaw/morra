@@ -44,7 +44,7 @@ const Player = {
     ...hasRandom,
     getHand: Fun([], UInt),
     getGuess: Fun([UInt], UInt),
-    seeOutcome: Fun([UInt], Null),
+    seeOutcome: Fun([UInt, UInt, UInt], Null),
     seePoints: Fun([UInt, UInt], Null),
     informTimeout: Fun([], Null)
 }
@@ -149,7 +149,7 @@ export const main = Reach.App(() => {
     commit();
 
     each([Alice, Bob], () => {
-        interact.seeOutcome(gameOutcome);
+        interact.seeOutcome(gameOutcome, aliceWinCount, bobWinCount);
     })
 
 })
