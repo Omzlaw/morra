@@ -2,27 +2,43 @@
 
 
 const [isRoundOutcome, R_A_WINS, DRAW, R_B_WINS] = makeEnum(3);
-const [isGameOutcome, A_WINS, B_WINS] = makeEnum(2);
+const [isGameOutcome, A_WINS, PLAYING, B_WINS] = makeEnum(3);
 const [isFingerCount, ZERO_F, ONE_F, TWO_F, THREE_F, FOUR_F, FIVE_F] = makeEnum(6);
 const [isGuess, ZERO_G, ONE_G, TWO_G, THREE_G, FOUR_G, FIVE_G, SIX_G, SEVEN_G, EIGHT_G, NINE_G, TEN_G] = makeEnum(11);
 
 
+const gameWinner = (aliceWinCount, bobWinCount) => {
+    if (aliceWinCount == 3) {
+        return A_WINS;
+    } else if (bobWinCount == 3) {
+        return B_WINS;
+    } else {
+        return PLAYING;
+    }
+}
+
 const roundWinner = (aliceFingers, aliceGuess, bobFingers, bobGuess, aliceWinCount, bobWinCount) => {
     const totalFingers = aliceFingers + bobFingers;
+
     if (aliceGuess == bobGuess) {
-        return [DRAW, aliceWinCount, bobWinCount];
+        const gameStatus = gameWinner(aliceWinCount, bobWinCount);
+        return [gameStatus, DRAW, aliceWinCount, bobWinCount];
     } else {
         if (totalFingers == aliceGuess) {
             const aliceNewCount = aliceWinCount + 1;
-            return [R_A_WINS, aliceNewCount, bobWinCount];
+            const gameStatus = gameWinner(aliceWinCount, bobWinCount);
+            return [gameStatus, R_A_WINS, aliceNewCount, bobWinCount];
         } else if (totalFingers == bobGuess) {
             const bobNewCount = bobWinCount + 1;
-            return [R_B_WINS, aliceWinCount, bobNewCount];
+            const gameStatus = gameWinner(aliceWinCount, bobWinCount);
+            return [gameStatus, R_B_WINS, aliceWinCount, bobNewCount];
         } else {
-            return [DRAW, aliceWinCount, bobWinCount];
+            const gameStatus = gameWinner(aliceWinCount, bobWinCount);
+            return [gameStatus, DRAW, aliceWinCount, bobWinCount];
         }
     }
 }
+
 
 const Player = {
     ...hasRandom,
@@ -67,11 +83,15 @@ export const main = Reach.App(() => {
     Bob.pay(wager);
 
 
-    var [roundOutcome, aliceWinCount, bobWinCount] = [DRAW, 0, 0];
-    invariant(balance() == 2 * wager && isRoundOutcome(roundOutcome));
+    var [gameOutcome, roundOutcome, aliceWinCount, bobWinCount] = [PLAYING, DRAW, 0, 0];
+    invariant(balance() == 2 * wager && isRoundOutcome(roundOutcome) && isGameOutcome(gameOutcome));
 
-    while (aliceWinCount < 3 || bobWinCount < 3) {
+    while (gameOutcome == PLAYING) {
         commit();
+
+        each([Alice, Bob], () => {
+            interact.seePoints(aliceWinCount, bobWinCount);
+        })
 
         Alice.only(() => {
             const _handAlice = interact.getHand();
@@ -118,11 +138,18 @@ export const main = Reach.App(() => {
             .timeout(relativeTime(deadline), () => closeTo(Bob, informTimeout));
         checkCommitment(guessCommitAlice, guessSaltAlice, guessAlice);
 
-        [roundOutcome, aliceWinCount, bobWinCount] = roundWinner(handAlice, guessAlice, handBob, guessBob, aliceWinCount, bobWinCount);
+        [gameOutcome, roundOutcome, aliceWinCount, bobWinCount] = roundWinner(handAlice, guessAlice, handBob, guessBob, aliceWinCount, bobWinCount);
 
         continue;
     };
 
+    assert(gameOutcome == A_WINS || gameOutcome == B_WINS);
+    transfer(2 * wager).to(gameOutcome == A_WINS ? Alice : Bob)
+
     commit();
+
+    each([Alice, Bob], () => {
+        interact.seeOutcome(gameOutcome);
+    })
 
 })
