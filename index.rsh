@@ -1,12 +1,14 @@
 'reach 0.1'
 
 
+// Define Enums
 const [isRoundOutcome, R_A_WINS, DRAW, R_B_WINS] = makeEnum(3);
 const [isGameOutcome, A_WINS, PLAYING, B_WINS] = makeEnum(3);
 const [isFingerCount, ZERO_F, ONE_F, TWO_F, THREE_F, FOUR_F, FIVE_F] = makeEnum(6);
 const [isGuess, ZERO_G, ONE_G, TWO_G, THREE_G, FOUR_G, FIVE_G, SIX_G, SEVEN_G, EIGHT_G, NINE_G, TEN_G] = makeEnum(11);
 
 
+// Logic to get current game status, first player to reach 3 points wins
 const gameWinner = (aliceWinCount, bobWinCount) => {
     if (aliceWinCount == 3) {
         return A_WINS;
@@ -17,6 +19,7 @@ const gameWinner = (aliceWinCount, bobWinCount) => {
     }
 }
 
+// Logic to get the winner for a particular round and addition of points for round win
 const roundWinner = (aliceFingers, aliceGuess, bobFingers, bobGuess, aliceWinCount, bobWinCount) => {
     const totalFingers = aliceFingers + bobFingers;
 
@@ -39,7 +42,7 @@ const roundWinner = (aliceFingers, aliceGuess, bobFingers, bobGuess, aliceWinCou
     }
 }
 
-
+// Player Interface
 const Player = {
     ...hasRandom,
     getHand: Fun([], UInt),
@@ -49,7 +52,10 @@ const Player = {
     informTimeout: Fun([], Null)
 }
 
+// Deadline constant
 const deadline = 10;
+
+
 
 export const main = Reach.App(() => {
 
@@ -83,7 +89,11 @@ export const main = Reach.App(() => {
     Bob.pay(wager);
 
 
+    // While loop structure
+
+    // define variables
     var [gameOutcome, roundOutcome, aliceWinCount, bobWinCount] = [PLAYING, DRAW, 0, 0];
+    //define invariants
     invariant(balance() == 2 * wager && isRoundOutcome(roundOutcome) && isGameOutcome(gameOutcome));
 
     while (gameOutcome == PLAYING) {
