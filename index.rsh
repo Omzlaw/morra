@@ -42,6 +42,54 @@ const roundWinner = (aliceFingers, aliceGuess, bobFingers, bobGuess, aliceWinCou
     }
 }
 
+
+// Test Assertion
+
+
+// Round Assertion
+
+// Alice wins round and gets one point. Alice plays 4 and Bob plays 5
+// Alice guesses 9 and Bob guesses 6
+assert(roundWinner(FOUR_F, NINE_G, FIVE_F, SIX_G, 0, 0) == [PLAYING, R_A_WINS, 1, 0]);
+
+// Bob wins round and gets one point. Alice plays 3 and Bob plays 2
+// Alice guessess 8 and Bob guesses 5
+assert(roundWinner(THREE_F, EIGHT_G, TWO_F, FIVE_G, 0, 0) == [PLAYING, R_B_WINS, 0, 1]);
+
+// Draw with same guesses
+// Alice plays 3 and Bob plays 1
+// Alice guesses 4 and Bob guesses 4
+assert(roundWinner(THREE_F, FOUR_G, ONE_F, FOUR_G, 0, 0) == [PLAYING, DRAW, 0, 0]);
+
+// Draw with both players guessing wrongly
+// Alice plays 2 and Bob plays 4
+// Alice guesses 5 and Bob guesses 9
+assert(roundWinner(TWO_F, FIVE_G, FOUR_F, NINE_G, 0, 0) == [PLAYING, DRAW, 0, 0]);
+
+// Game Winner Assertion
+
+// Alice has 3 points and Bob has 2 points. Alice wins game
+assert(gameWinner(3, 2) == A_WINS)
+
+// Alice has 1 points and Bob has 3 points. Bob wins game
+assert(gameWinner(1, 3) == B_WINS)
+
+// Alice has 2 points and Bob has 2 points. Gane status is 'PLAYING'
+assert(gameWinner(2, 2) == PLAYING)
+
+// assets for all combinations
+forall(UInt, aliceFingers =>
+    forall(UInt, bobFingers =>
+        forall(UInt, aliceGuess =>
+            forall(UInt, bobGuess =>
+                assert(isRoundOutcome(roundWinner(aliceFingers, aliceGuess, bobFingers, bobGuess, 0, 0)[1]))))));
+
+//  asserts for a draw - each guesses the same
+forall(UInt, (aliceFingers) =>
+    forall(UInt, (bobFingers) =>
+        forall(UInt, (guess) =>
+            assert(roundWinner(aliceFingers, guess, bobFingers, guess, 0, 0) == [PLAYING, DRAW, 0, 0]))));
+
 // Player Interface
 const Player = {
     ...hasRandom,
