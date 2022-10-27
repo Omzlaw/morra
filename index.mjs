@@ -1,39 +1,97 @@
-import { loadStdlib } from "@reach-sh/stdlib";
+import { loadStdlib, ask } from "@reach-sh/stdlib";
 import * as backend from './build/index.main.mjs';
 
 const stdlib = loadStdlib();
 
 const startingBalance = stdlib.parseCurrency(100);
-const accAlice = await stdlib.newTestAccount(startingBalance);
-const accBob = await stdlib.newTestAccount(startingBalance);
+// const accAlice = await stdlib.newTestAccount(startingBalance);
+// const accBob = await stdlib.newTestAccount(startingBalance);
+const isAlice = await ask.ask(
+    `Are you Alice?`,
+    ask.yesno
+);
+const who = isAlice ? 'Alice' : 'Bob';
 
 
-const ctcAlice = accAlice.contract(backend);
-const ctcBob = accBob.contract(backend, ctcAlice.getInfo());
+
+// const ctcAlice = accAlice.contract(backend);
+// const ctcBob = accBob.contract(backend, ctcAlice.getInfo());
+let acc = null;
+const createAcc = await ask.ask(
+    `Would you like to create an account? (only possible on devnet)`,
+    ask.yesno
+);
+if (createAcc) {
+    acc = await stdlib.newTestAccount(startingBalance);
+} else {
+    const secret = await ask.ask(
+        `What is your account secret?`,
+        (x => x)
+    );
+    acc = await stdlib.newAccountFromSecret(secret);
+}
+
+let ctc = null;
+if (isAlice) {
+    ctc = acc.contract(backend);
+    ctc.getInfo().then((info) => {
+        console.log(`The contract is deployed as = ${JSON.stringify(info)}`);
+    });
+} else {
+    const info = await ask.ask(
+        `Please paste the contract information:`,
+        JSON.parse
+    );
+    ctc = acc.contract(backend, info);
+}
 
 const fmt = (x) => stdlib.formatCurrency(x, 4);
-const getBalance = async (who) => fmt(await stdlib.balanceOf(who));
+const getBalance = async () => fmt(await stdlib.balanceOf(acc));
 
-const beforeAlice = await getBalance(accAlice);
-const beforeBob = await getBalance(accBob);
+// const beforeAlice = await getBalance(accAlice);
+// const beforeBob = await getBalance(accBob);
+const before = await getBalance();
+console.log(`Your balance is ${before}`);
 
 
 const HAND = [0, 1, 2, 3, 4, 5];
 const GUESS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const GAME_OUTCOME = ['Alice wins', 'Playing', 'Bob Wins'];
 
+
 const Player = (who) => ({
     ...stdlib.hasRandom,
-    getHand: () => {
-        const hand = Math.floor(Math.random() * 6);
-        console.log(`${who} played ${HAND[hand]}\n`);
-        
+    getHand: async () => {
+        // const hand = Math.floor(Math.random() * 6);
+        // console.log(`${who} played ${HAND[hand]}\n`);
+
+        // return hand;
+
+        const hand = await ask.ask(`What finger will you play? (0-5)`, (x) => {
+            const hand = HAND[x];
+            if (hand === undefined) {
+                throw Error(`Not a valid finger ${hand}`);
+            }
+            return hand;
+        });
+        console.log(`You played ${HAND[hand]}`);
         return hand;
     },
-    getGuess: (fingersPlayed) => {
-        const guess = Math.floor((Math.random() * 6) + HAND[fingersPlayed]);
-        console.log(`${who} guessed a total of ${GUESS[guess]}\n`);
+    getGuess: async (fingersPlayed) => {
+        // const guess = Math.floor((Math.random() * 6) + HAND[fingersPlayed]);
+        // console.log(`${who} guessed a total of ${GUESS[guess]}\n`);
+        // return guess;
+
+        const guess = await ask.ask(`What number do you guess?`, (x) => {
+            const guess = GUESS[x];
+            if (guess === undefined) {
+                throw Error(`Not a valid guess ${guess}`);
+            }
+            return guess;
+        });
+        console.log(`You guessed ${GUESS[guess]}`);
         return guess;
+
     },
     seePoints: (aliceWinCount, bobWinCount) => {
         console.log(`Alice has ${aliceWinCount} point(s). Bob has ${bobWinCount} point(s)\n`);
@@ -47,25 +105,55 @@ const Player = (who) => ({
     }
 });
 
-await Promise.all([
-    ctcAlice.p.Alice({
-        ...Player('Alice'),
-        setWager: () => {
-            const wager = stdlib.parseCurrency(10);
-            return wager
+const interact = { ...Player(who) };
+
+
+if (isAlice) {
+    interact.setWager = async () => {
+        const wager = await ask.ask(
+            `How much do you want to wager?`,
+            stdlib.parseCurrency
+        );
+        return wager;
+    }
+} else {
+    interact.acceptWager = async (wager) => {
+        const accepted = await ask.ask(
+            `Do you accept the wager of ${fmt(wager)}?`,
+            ask.yesno
+        );
+        if (!accepted) {
+            process.exit(0);
         }
-    }),
-    ctcBob.p.Bob({
-        ...Player('Bob'),
-        acceptWager: (wager) => {
-            console.log(`Bob accepted wager of ${fmt(wager)}\n`);
-        }
-    }),
-]);
+    };
+}
 
 
-const afterAlice = await getBalance(accAlice);
-const afterBob = await getBalance(accBob);
+// await Promise.all([
+//     ctcAlice.p.Alice({
+//         ...Player('Alice'),
+//         setWager: () => {
+//             const wager = stdlib.parseCurrency(10);
+//             return wager
+//         }
+//     }),
+//     ctcBob.p.Bob({
+//         ...Player('Bob'),
+//         acceptWager: (wager) => {
+//             console.log(`Bob accepted wager of ${fmt(wager)}\n`);
+//         }
+//     }),
+// ]);
 
-console.log(`Alice went from ${beforeAlice} to ${afterAlice}`);
-console.log(`Bob went from ${beforeBob} to ${afterBob}`);
+const part = isAlice ? ctc.p.Alice : ctc.p.Bob;
+await part(interact);
+
+// const afterAlice = await getBalance(accAlice);
+// const afterBob = await getBalance(accBob);
+
+// console.log(`Alice went from ${beforeAlice} to ${afterAlice}`);
+// console.log(`Bob went from ${beforeBob} to ${afterBob}`);
+const after = await getBalance();
+console.log(`Your balance is now ${after}`);
+
+ask.done();
