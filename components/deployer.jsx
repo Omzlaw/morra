@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import * as backend from '../build/index.main.mjs';
+import { loadStdlib } from '@reach-sh/stdlib';
 const reach = loadStdlib(process.env);
 const { standardUnit } = reach;
 
 
 import { defaults } from '../utils/constants.js';
 import SetWager from '../views/deployer-views/set-wager.jsx';
-import { loadStdlib } from '@reach-sh/stdlib';
 import WaitingForAttacher from '../views/deployer-views/waiting-for-attacher.jsx';
 import Deploying from '../views/deployer-views/deploying.jsx';
 import Deploy from '../views/deployer-views/deploy.jsx';

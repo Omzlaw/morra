@@ -12,6 +12,7 @@ import FundAccount from './views/app-views/fund-account';
 import DeployerAttacher from './views/app-views/deployer-attacher';
 import ConnectAccount from './views/app-views/connect-account';
 import Deployer from './components/deployer';
+import Attacher from './components/attacher';
 
 
 const App = () => {
@@ -63,7 +64,8 @@ const App = () => {
             return <DeployerAttacher selectDeployer={selectDeployer} selectAttacher={selectAttacher} />;
         case 'Deployer':
             return <Deployer acc={account} />;
-
+        case 'Attacher':
+            return <Attacher acc={account} />;
         default:
             return (
                 <div></div>
