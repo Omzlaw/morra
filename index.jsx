@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { renderDOM } from './views/render';
 import './index.css';
-import * as backend from './build/index.main.mjs';
 import { loadStdlib } from '@reach-sh/stdlib';
 const reach = loadStdlib(process.env);
 const { standardUnit } = reach;
