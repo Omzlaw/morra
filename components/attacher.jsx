@@ -10,7 +10,7 @@ import Attaching from "../views/attacher-views/attaching";
 import WaitingForTurn from '../views/attacher-views/waiting-for-turn';
 
 
-const Attacher = ({ acc }) => {
+const Attacher = ({ acc, interactObjects }) => {
     const [view, setView] = useState('Attach');
     const [wager, setWager] = useState(null);
 

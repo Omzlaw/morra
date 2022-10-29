@@ -11,7 +11,7 @@ import WaitingForAttacher from '../views/deployer-views/waiting-for-attacher.jsx
 import Deploying from '../views/deployer-views/deploying.jsx';
 import Deploy from '../views/deployer-views/deploy.jsx';
 
-const Deployer = ({ acc }) => {
+const Deployer = ({ acc, interactObjects }) => {
     const [view, setView] = useState('SetWager');
     const [ctcInfoStr, setCtcInfoStr] = useState(null);
     const [wager, setWagerValue] = useState(defaults.defaultWager);

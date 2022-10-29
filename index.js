@@ -13,6 +13,7 @@ import DeployerAttacher from './views/app-views/deployer-attacher';
 import ConnectAccount from './views/app-views/connect-account';
 import Deployer from './components/deployer';
 import Attacher from './components/attacher';
+import WithPlayer from './components/player';
 
 
 const App = () => {
@@ -63,9 +64,11 @@ const App = () => {
         case 'DeployerOrAttacher':
             return <DeployerAttacher selectDeployer={selectDeployer} selectAttacher={selectAttacher} />;
         case 'Deployer':
-            return <Deployer acc={account} />;
+            const DeployerWithPlayer = WithPlayer(Deployer, account);
+            return <DeployerWithPlayer />;
         case 'Attacher':
-            return <Attacher acc={account} />;
+            const AttacherWithPlayer = WithPlayer(Attacher, account);
+            return <AttacherWithPlayer />;
         default:
             return (
                 <div></div>
