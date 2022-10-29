@@ -1,5 +1,5 @@
-import React from 'react';
-import { defaults } from '../utils/constants.js';
+import React, {useState} from 'react';
+import { defaults } from '../../utils/constants';
 
 const SetWager = ({ setWager, setView, standardUnit }) => {
     const [wager, setWagerValue] = useState(defaults.defaultWager);

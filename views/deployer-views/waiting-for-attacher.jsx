@@ -3,7 +3,7 @@ import React from 'react';
 const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 const WaitingForAttacher = ({ ctcInfoStr }) => {
-    const copyToClipboard = (button) => {
+    const copyToClipboard = async (button) => {
         navigator.clipboard.writeText(ctcInfoStr);
         const origInnerHTML = button.innerHTML;
         button.innerHTML = 'Copied!';

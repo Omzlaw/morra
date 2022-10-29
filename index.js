@@ -11,6 +11,7 @@ import { defaults } from './utils/constants';
 import FundAccount from './views/app-views/fund-account';
 import DeployerAttacher from './views/app-views/deployer-attacher';
 import ConnectAccount from './views/app-views/connect-account';
+import Deployer from './components/deployer';
 
 
 const App = () => {
@@ -39,10 +40,11 @@ const App = () => {
     useEffect(() => {
         (async () => {
             // const acc = await reach.getDefaultAccount();
-            // const balAtomic = await reach.balanceOf(acc);
-            // const bal = reach.formatCurrency(balAtomic, 4);
-            // setAccount(acc);
-            // setBalance(bal);
+            const acc = await reach.newTestAccount(reach.parseCurrency(defaults.defaultFundAmt));
+            const balAtomic = await reach.balanceOf(acc);
+            const bal = reach.formatCurrency(balAtomic, 4);
+            setAccount(acc);
+            setBalance(bal);
 
             if (await reach.canFundFromFaucet()) {
                 setView('FundAccount');
@@ -59,6 +61,9 @@ const App = () => {
             return <FundAccount bal={balance} standardUnit={standardUnit} defaultFundAmt={defaults.defaultFundAmt} fundAccount={fundAccount} skipFundAccount={skipFundAccount} />;
         case 'DeployerOrAttacher':
             return <DeployerAttacher selectDeployer={selectDeployer} selectAttacher={selectAttacher} />;
+        case 'Deployer':
+            return <Deployer acc={account} />;
+
         default:
             return (
                 <div></div>
