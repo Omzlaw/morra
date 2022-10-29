@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { defaults } from '../../utils/constants';
 
 const SetWager = ({ setWager, setView, standardUnit }) => {
-    const [wager, setWagerValue] = useState(defaults.defaultWager);
+    const [wager, getWager] = useState(defaults.defaultWager);
 
     const handleClick = () => {
         setWager(wager);
@@ -14,7 +14,7 @@ const SetWager = ({ setWager, setView, standardUnit }) => {
             <input
                 type='number'
                 placeholder={defaults.defaultWager}
-                onChange={(e) => setWagerValue(e.currentTarget.value)}
+                onChange={(e) => getWager(e.currentTarget.value)}
             /> {standardUnit}
             <br />
             <button

@@ -23,7 +23,7 @@ const Deployer = ({ acc, interactObjects }) => {
     const deploy = async () => {
         const ctc = acc.contract(backend);
         setView('Deploying');
-        backend.Alice(ctc, {setWager});
+        backend.Alice(ctc, {setWager, ...interactObjects});
         const ctcInfoStrData = JSON.stringify(await ctc.getInfo(), null, 2);
         setCtcInfoStr(ctcInfoStrData);
         setView('WaitingForAttacher');

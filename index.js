@@ -5,6 +5,11 @@ import { loadStdlib } from '@reach-sh/stdlib';
 const reach = loadStdlib(process.env);
 const { standardUnit } = reach;
 
+import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
+reach.setWalletFallback(reach.walletFallback({
+    providerEnv: 'TestNet', MyAlgoConnect
+}))
+
 
 import { defaults } from './utils/constants';
 
@@ -41,8 +46,7 @@ const App = () => {
 
     useEffect(() => {
         (async () => {
-            // const acc = await reach.getDefaultAccount();
-            const acc = await reach.newTestAccount(reach.parseCurrency(defaults.defaultFundAmt));
+            const acc = await reach.getDefaultAccount();
             const balAtomic = await reach.balanceOf(acc);
             const bal = reach.formatCurrency(balAtomic, 4);
             setAccount(acc);
