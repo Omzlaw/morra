@@ -12,20 +12,22 @@ const GameView = ({ points, roundOutcome = "Draw", setHand, setGuess, playable, 
             case 'GetGuess':
                 return <GetGuess setGuess={setGuess} />
             default:
-                return <div>Please wait for your turn...</div>
+                return <h4>Please wait for your turn...</h4>
         }
     }
 
     return (
-        <div>
-            <h3>Morra Game</h3>
-            <span>{`Alice ${aliceWinCount} : ${bobWinCount} Bob`}</span>
+        <div className="body text-center">
             <div>
-                <span>{ROUND_OUTCOME[roundOutcome]}</span>
+                <h3 className="mb-5">Morra Game</h3>
+                <h5 className="mb-3">{`Alice ${aliceWinCount} : ${bobWinCount} Bob`}</h5>
+                <div className="mb-5">
+                    <span>Round state: {ROUND_OUTCOME[roundOutcome]}</span>
+                </div>
+                {
+                    playable ? <div>{getActiveView()}</div> : <h4>Please wait for your turn...</h4>
+                }
             </div>
-            {
-                playable ? getActiveView() : <div>Please wait for your turn...</div>
-            }
         </div>
     );
 }

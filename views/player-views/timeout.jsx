@@ -2,12 +2,15 @@ import React from 'react';
 
 const Timeout = () => {
     return (
-        <div>
-            <h3>A timeout occured</h3>
+        <div className="body text-center">
+            <div>
+                <h3 className="mb-5">A timeout occured</h3>
 
-            <button
-                onClick={() => location.href = '/'}
-            >Exit</button>
+                <button
+                    className="btn btn-danger"
+                    onClick={() => location.href = '/'}
+                >Exit</button>
+            </div>
         </div>
     )
 }

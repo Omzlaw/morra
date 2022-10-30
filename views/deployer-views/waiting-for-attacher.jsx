@@ -14,15 +14,18 @@ const WaitingForAttacher = ({ ctcInfoStr }) => {
     }
 
     return (
-        <div>
-            Waiting for Attacher to join...
-            <br /> Please give them this contract info:
-            <pre className='ContractInfo'>
-                {ctcInfoStr}
-            </pre>
-            <button
-                onClick={(e) => copyToClipboard(e.currentTarget)}
-            >Copy to clipboard</button>
+        <div className="body text-center">
+            <div>
+                <h3 className="mb-3">Waiting for Attacher to join...</h3>
+                <h5 className="mb-3">Please give them this contract info:</h5>
+                <pre className='contract-info mb-5'>
+                    {ctcInfoStr}
+                </pre>
+                <button
+                    className="btn btn-warning"
+                    onClick={(e) => copyToClipboard(e.currentTarget)}
+                >Copy to clipboard</button>
+            </div>
         </div>
     )
 }

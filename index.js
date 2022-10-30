@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { renderDOM } from './views/render';
-import './index.css';
 import { loadStdlib } from '@reach-sh/stdlib';
 const reach = loadStdlib(process.env);
 const { standardUnit } = reach;
+
+
+import './vendors/bootstrap-5.2.2-dist/css/bootstrap.min.css';
+import './index.css';
+
 
 import { ALGO_WalletConnect as algoConnect } from '@reach-sh/stdlib';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';

@@ -3,7 +3,9 @@ import React from 'react';
 const Deploying = () => {
 
     return (
-        <div>Deploying... please wait.</div>
+        <div className="body text-center">
+            <h3>Deploying... please wait.</h3>
+        </div>
     );
 }
 
