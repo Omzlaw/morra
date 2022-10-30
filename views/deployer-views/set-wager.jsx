@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { defaults } from '../../utils/constants';
 
-const SetWager = ({ setWager, setView, standardUnit }) => {
+const SetWager = ({ setWagerValue, setView, standardUnit }) => {
     const [wager, getWager] = useState(defaults.defaultWager);
 
     const handleClick = () => {
-        setWager(wager);
+        setWagerValue(wager);
         setView('Deploy');
     }
 

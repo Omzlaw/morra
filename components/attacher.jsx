@@ -18,8 +18,8 @@ const Attacher = ({ acc, interactObjects }) => {
     const acceptWager = async (wagerAtomic) => {
         const wager = reach.formatCurrency(wagerAtomic, 4);
 
-        return await new Promise(resolveAcceptedP => {
-            setResolveAcceptedP(resolveAcceptedP);
+        return await new Promise(resolve => {
+            setResolveAcceptedP(() => resolve);
             setWager(wager);
             setView('AcceptTerms');
         });

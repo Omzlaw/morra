@@ -6,42 +6,51 @@ import { HAND, GUESS, GAME_OUTCOME } from '../utils/constants';
 import GameView from '../views/player-views/game-view';
 import Timeout from '../views/player-views/timeout';
 import GameEnd from '../views/player-views/game-end';
+import AwaitingResult from '../views/player-views/waiting-result';
 
 
 const WithPlayer = (WrappedComponent, account) => {
     const Player = () => {
 
         const [view, setView] = useState('Wrapper');
-        const [points, setPoints] = useState({});
+        const [points, setPoints] = useState(null);
         const [gameOutcome, setGameOutcome] = useState(null);
         const [playable, setPlayable] = useState(false);
-        const [resolveHandP, setResolveHandP] = useState(false);
-        const [resolveGuessP, setResolveGuessP] = useState(false);
+        const [resolveHandP, setResolveHandP] = useState();
+        const [resolveGuessP, setResolveGuessP] = useState();
+        const [handGuessValue, setHandGuessValue] = useState(null);
 
         const random = () => {
             return reach.hasRandom.random();
         }
 
-        const setHand = (hand) => { resolveHandP(hand); }
+        const setHand = (hand) => {
+            setHandGuessValue({ ...handGuessValue, hand: HAND[hand] });
+            resolveHandP(hand);
+        }
 
         const getHand = async () => {
 
-            const hand = await new Promise(resolveHandP => {
+            const hand = await new Promise(resolve => {
                 setPlayable(true);
+                setResolveHandP(() => resolve);
                 setView('GetHand');
-                setResolveHandP(resolveHandP);
             });
-            return hand;
+            return HAND[hand];
         }
 
-        const setGuess = (guess) => { resolveGuessP(guess); }
+        const setGuess = (guess) => {
+            setHandGuessValue({ ...handGuessValue, guess: GUESS[guess] });
+            resolveGuessP(guess);
+            setView("AwaitingResult");
+        }
 
         const getGuess = async (fingersPlayed) => {
-            const guess = await new Promise(resolveGuessP => {
+            const guess = await new Promise(resolve => {
+                setResolveGuessP(() => resolve);
                 setView('GetGuess');
-                setResolveGuessP(resolveGuessP);
             });
-            return guess;
+            return GUESS[guess];
         }
 
         const seePoints = (aliceWinCount, bobWinCount) => {
@@ -63,8 +72,12 @@ const WithPlayer = (WrappedComponent, account) => {
         switch (view) {
             case 'Wrapper':
                 return <WrappedComponent acc={account} interactObjects={{ random, getHand, getGuess, seePoints, seeOutcome, informTimeout }} />
-            case 'GameView' || 'GetHand' || 'GetGuess':
+            case 'GameView':
+            case 'GetHand':
+            case 'GetGuess':
                 return <GameView points={points} setHand={setHand} setGuess={setGuess} playable={playable} view={view} />;
+            case 'AwaitingResult':
+                return <AwaitingResult hand={handGuessValue.hand} guess={handGuessValue.guess} />;
             case 'GameEnd':
                 return <GameEnd gameOutcome={gameOutcome} points={points} />;
             case 'Timeout':

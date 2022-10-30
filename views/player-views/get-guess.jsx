@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GUESS } from '../../utils/constants';
 
 const GetGuess = ({ setGuess }) => {

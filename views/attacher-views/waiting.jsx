@@ -9,4 +9,4 @@ const Waiting = () => {
     );
 }
 
-export default WaitingForTurn;
+export default Waiting;

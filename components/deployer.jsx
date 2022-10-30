@@ -17,13 +17,14 @@ const Deployer = ({ acc, interactObjects }) => {
     const [wager, setWagerValue] = useState(defaults.defaultWager);
 
     const setWager = () => {
-        return wager;
+        const parsedWager = reach.parseCurrency(wager);
+        return parsedWager;
     }
 
     const deploy = async () => {
         const ctc = acc.contract(backend);
         setView('Deploying');
-        backend.Alice(ctc, {setWager, ...interactObjects});
+        backend.Alice(ctc, { setWager, ...interactObjects });
         const ctcInfoStrData = JSON.stringify(await ctc.getInfo(), null, 2);
         setCtcInfoStr(ctcInfoStrData);
         setView('WaitingForAttacher');
@@ -31,7 +32,7 @@ const Deployer = ({ acc, interactObjects }) => {
 
     switch (view) {
         case 'SetWager':
-            return <SetWager setWager={setWagerValue} setView={setView} standardUnit={standardUnit} />;
+            return <SetWager setWagerValue={setWagerValue} setView={setView} standardUnit={standardUnit} />;
         case 'WaitingForAttacher':
             return <WaitingForAttacher ctcInfoStr={ctcInfoStr} />;
         case 'Deploying':
