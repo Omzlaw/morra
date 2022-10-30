@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { loadStdlib } from '@reach-sh/stdlib';
 const reach = loadStdlib(process.env);
+const { standardUnit } = reach;
 
-import { HAND, GUESS, GAME_OUTCOME } from '../utils/constants';
+import { HAND, GUESS } from '../utils/constants';
 import GameView from '../views/player-views/game-view';
 import Timeout from '../views/player-views/timeout';
 import GameEnd from '../views/player-views/game-end';
@@ -20,6 +21,7 @@ const WithPlayer = (WrappedComponent, account) => {
         const [resolveHandP, setResolveHandP] = useState();
         const [resolveGuessP, setResolveGuessP] = useState();
         const [handGuessValue, setHandGuessValue] = useState(null);
+        const [balance, setBalance] = useState(null);
 
         const random = () => {
             return reach.hasRandom.random();
@@ -60,10 +62,13 @@ const WithPlayer = (WrappedComponent, account) => {
             setPoints({ aliceWinCount, bobWinCount });
         }
 
-        const seeOutcome = (gameOutcome, aliceWinCount, bobWinCount) => {
-            setView('GameEnd');
+        const seeOutcome = async (gameOutcome, aliceWinCount, bobWinCount) => {
+            const balAtomic = await reach.balanceOf(account);
+            const bal = reach.formatCurrency(balAtomic, 4);
+            setBalance(bal);
             setGameOutcome(gameOutcome);
             setPoints({ aliceWinCount, bobWinCount });
+            setView('GameEnd');
         }
 
         const informTimeout = () => {
@@ -81,7 +86,7 @@ const WithPlayer = (WrappedComponent, account) => {
             case 'AwaitingResult':
                 return <AwaitingResult hand={handGuessValue.hand} guess={handGuessValue.guess} />;
             case 'GameEnd':
-                return <GameEnd gameOutcome={gameOutcome} points={points} />;
+                return <GameEnd gameOutcome={gameOutcome} points={points} standardUnit={standardUnit} balance={balance} />;
             case 'Timeout':
                 return <Timeout />;
             default:

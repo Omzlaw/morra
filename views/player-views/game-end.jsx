@@ -1,7 +1,7 @@
 import React from 'react';
 import { GAME_OUTCOME } from '../../utils/constants';
 
-const GameEnd = ({ points, gameOutcome }) => {
+const GameEnd = ({ points, gameOutcome, balance, standardUnit }) => {
     const { aliceWinCount, bobWinCount } = points;
     return (
         <div>
@@ -10,6 +10,9 @@ const GameEnd = ({ points, gameOutcome }) => {
             <div><span>{`Alice ${aliceWinCount} : ${bobWinCount} Bob`}</span></div>
             <div>
                 <span>{GAME_OUTCOME[gameOutcome]}</span>
+            </div>
+            <div>
+                <span>{`Current Balance: ${balance} ${standardUnit}`}</span>
             </div>
             <button
                 onClick={() => location.href = '/'}
