@@ -96,7 +96,7 @@ const Player = {
     getHand: Fun([], UInt),
     getGuess: Fun([UInt], UInt),
     seeOutcome: Fun([UInt, UInt, UInt], Null),
-    seePoints: Fun([UInt, UInt], Null),
+    seePoints: Fun([UInt, UInt, UInt], Null),
     informTimeout: Fun([], Null)
 }
 
@@ -148,7 +148,7 @@ export const main = Reach.App(() => {
         commit();
 
         each([Alice, Bob], () => {
-            interact.seePoints(aliceWinCount, bobWinCount);
+            interact.seePoints(aliceWinCount, bobWinCount, roundOutcome);
         })
 
         Alice.only(() => {

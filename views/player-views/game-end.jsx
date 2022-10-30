@@ -7,6 +7,9 @@ const GameEnd = ({ points }) => {
             <h3>Game Over</h3>
 
             <span>{`Alice ${aliceWinCount} : ${bobWinCount} Bob`}</span>
+            <button
+                onClick={() => location.href = '/'}
+            >Exit</button>
         </div>
     );
 }

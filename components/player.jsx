@@ -15,6 +15,7 @@ const WithPlayer = (WrappedComponent, account) => {
         const [view, setView] = useState('Wrapper');
         const [points, setPoints] = useState(null);
         const [gameOutcome, setGameOutcome] = useState(null);
+        const [roundOutcome, setRoundOutcome] = useState(null);
         const [playable, setPlayable] = useState(false);
         const [resolveHandP, setResolveHandP] = useState();
         const [resolveGuessP, setResolveGuessP] = useState();
@@ -53,8 +54,9 @@ const WithPlayer = (WrappedComponent, account) => {
             return GUESS[guess];
         }
 
-        const seePoints = (aliceWinCount, bobWinCount) => {
+        const seePoints = (aliceWinCount, bobWinCount, roundOutcome) => {
             setView('GameView');
+            setRoundOutcome(roundOutcome);
             setPoints({ aliceWinCount, bobWinCount });
         }
 
@@ -75,7 +77,7 @@ const WithPlayer = (WrappedComponent, account) => {
             case 'GameView':
             case 'GetHand':
             case 'GetGuess':
-                return <GameView points={points} setHand={setHand} setGuess={setGuess} playable={playable} view={view} />;
+                return <GameView roundOutcome={roundOutcome} points={points} setHand={setHand} setGuess={setGuess} playable={playable} view={view} />;
             case 'AwaitingResult':
                 return <AwaitingResult hand={handGuessValue.hand} guess={handGuessValue.guess} />;
             case 'GameEnd':

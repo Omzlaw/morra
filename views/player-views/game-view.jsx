@@ -1,8 +1,9 @@
 import React from 'react';
 import GetGuess from './get-guess';
 import GetHand from './get-hand';
+import { ROUND_OUTCOME } from '../../utils/constants';
 
-const GameView = ({ points, setHand, setGuess, playable, view }) => {
+const GameView = ({ points, roundOutcome = "Draw", setHand, setGuess, playable, view }) => {
     const { aliceWinCount, bobWinCount } = points;
     const getActiveView = () => {
         switch (view) {
@@ -19,6 +20,9 @@ const GameView = ({ points, setHand, setGuess, playable, view }) => {
         <div>
             <h3>Morra Game</h3>
             <span>{`Alice ${aliceWinCount} : ${bobWinCount} Bob`}</span>
+            <div>
+                <span>{ROUND_OUTCOME[roundOutcome]}</span>
+            </div>
             {
                 playable ? getActiveView() : <div>Please wait for your turn...</div>
             }

@@ -93,7 +93,7 @@ const Player = (who) => ({
         return guess;
 
     },
-    seePoints: (aliceWinCount, bobWinCount) => {
+    seePoints: (aliceWinCount, bobWinCount, roundOutcome) => {
         console.log(`Alice has ${aliceWinCount} point(s). Bob has ${bobWinCount} point(s)\n`);
     },
     seeOutcome: (gameOutcome, aliceWinCount, bobWinCount) => {
