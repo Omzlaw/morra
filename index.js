@@ -5,11 +5,8 @@ import { loadStdlib } from '@reach-sh/stdlib';
 const reach = loadStdlib(process.env);
 const { standardUnit } = reach;
 
+import { ALGO_WalletConnect as algoConnect } from '@reach-sh/stdlib';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-reach.setWalletFallback(reach.walletFallback({
-    providerEnv: 'TestNet', MyAlgoConnect
-}));
-
 
 import { defaults } from './utils/constants';
 
@@ -23,9 +20,23 @@ import Wrapper from './views/app-views/wrapper';
 
 
 const App = () => {
-    const [view, setView] = useState('Wrapper');
+    const [view, setView] = useState('SelectWallet');
     const [balance, setBalance] = useState(null);
     const [account, setAccount] = useState(null);
+
+    const selectMyAlgoWallet = async () => {
+        reach.setWalletFallback(reach.walletFallback({
+            providerEnv: 'TestNet', MyAlgoConnect
+        }));
+        setView('StartGame');
+    }
+
+    const selectPeraAlgoWallet = async () => {
+        reach.setWalletFallback(reach.walletFallback({
+            providerEnv: 'TestNet', algoConnect
+        }));
+        setView('StartGame');
+    }
 
     const startGame = async () => {
         const acc = await reach.getDefaultAccount();
@@ -65,8 +76,9 @@ const App = () => {
     // }, []);
 
     switch (view) {
-        case 'Wrapper':
-            return <Wrapper startGame={startGame} />
+        case 'StartGame':
+        case 'SelectWallet':
+            return <Wrapper selectMyAlgoWallet={selectMyAlgoWallet} selectPeraAlgoWallet={selectPeraAlgoWallet} view={view} startGame={startGame} />
         case 'ConnectAccount':
             return <ConnectAccount />;
         case 'FundAccount':
