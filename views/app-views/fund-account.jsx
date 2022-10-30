@@ -14,6 +14,8 @@ const FundAccount = ({ bal, standardUnit, defaultFundAmt, fundAccount, skipFundA
                 <div className="mb-3">
                     <label htmlFor="fund" className="form-label">Amount to fund with</label>
                     <input
+                        id="fund"
+                        className="form-control"
                         type='number'
                         placeholder={defaultFundAmt}
                         onChange={(e) => setAmt(e.currentTarget.value)}
