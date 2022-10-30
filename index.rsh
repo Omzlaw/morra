@@ -101,7 +101,7 @@ const Player = {
 }
 
 // Deadline constant
-const deadline = 10;
+// const deadline = 10;
 
 
 
@@ -109,6 +109,7 @@ export const main = Reach.App(() => {
 
     const Alice = Participant('Alice', {
         ...Player,
+        deadline: UInt, // time delta (blocks/rounds)
         setWager: Fun([], UInt),
     });
     const Bob = Participant('Bob', {
@@ -125,8 +126,9 @@ export const main = Reach.App(() => {
 
     Alice.only(() => {
         const wager = declassify(interact.setWager());
+        const deadline = declassify(interact.deadline);
     });
-    Alice.publish(wager)
+    Alice.publish(wager, deadline)
         .pay(wager);
     commit();
 

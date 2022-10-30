@@ -21,10 +21,12 @@ const Deployer = ({ acc, interactObjects }) => {
         return parsedWager;
     }
 
+    const deadline = { ETH: 10, ALGO: 100, CFX: 1000 }[reach.connector];
+
     const deploy = async () => {
         const ctc = acc.contract(backend);
         setView('Deploying');
-        backend.Alice(ctc, { setWager, ...interactObjects });
+        backend.Alice(ctc, { setWager, deadline, ...interactObjects });
         const ctcInfoStrData = JSON.stringify(await ctc.getInfo(), null, 2);
         setCtcInfoStr(ctcInfoStrData);
         setView('WaitingForAttacher');

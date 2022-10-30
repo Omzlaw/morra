@@ -116,6 +116,7 @@ if (isAlice) {
         );
         return wager;
     }
+    interact.deadline = { ETH: 100, ALGO: 100, CFX: 1000 }[stdlib.connector];
 } else {
     interact.acceptWager = async (wager) => {
         const accepted = await ask.ask(
