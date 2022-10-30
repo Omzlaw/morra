@@ -19,13 +19,28 @@ import ConnectAccount from './views/app-views/connect-account';
 import Deployer from './components/deployer';
 import Attacher from './components/attacher';
 import WithPlayer from './components/player';
+import Wrapper from './views/app-views/wrapper';
 
 
 const App = () => {
-    const [view, setView] = useState('ConnectAccount');
+    const [view, setView] = useState('Wrapper');
     const [balance, setBalance] = useState(null);
     const [account, setAccount] = useState(null);
 
+    const startGame = async () => {
+        const acc = await reach.getDefaultAccount();
+        // const acc = await reach.newTestAccount(reach.parseCurrency(defaults.defaultFundAmt));
+        const balAtomic = await reach.balanceOf(acc);
+        const bal = reach.formatCurrency(balAtomic, 4);
+        setAccount(acc);
+        setBalance(bal);
+
+        if (await reach.canFundFromFaucet()) {
+            setView('FundAccount');
+        } else {
+            setView('DeployerOrAttacher')
+        }
+    }
 
     const fundAccount = async (fundAmount) => {
         await reach.fundFromFaucet(account, reach.parseCurrency(fundAmount));
@@ -44,24 +59,14 @@ const App = () => {
         setView('Deployer');
     }
 
-    useEffect(() => {
-        (async () => {
-            const acc = await reach.getDefaultAccount();
-            // const acc = await reach.newTestAccount(reach.parseCurrency(defaults.defaultFundAmt));
-            const balAtomic = await reach.balanceOf(acc);
-            const bal = reach.formatCurrency(balAtomic, 4);
-            setAccount(acc);
-            setBalance(bal);
-
-            if (await reach.canFundFromFaucet()) {
-                setView('FundAccount');
-            } else {
-                setView('DeployerOrAttacher')
-            }
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //     })();
+    // }, []);
 
     switch (view) {
+        case 'Wrapper':
+            return <Wrapper startGame={startGame} />
         case 'ConnectAccount':
             return <ConnectAccount />;
         case 'FundAccount':
